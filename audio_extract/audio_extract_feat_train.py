@@ -36,22 +36,40 @@ for line in file.readlines():
     video_names.append(v)
 
 
-print('len: ' + str(len(wave_files)))
-print('load path: done')
+print(len(wave_files)) # total: 55946
+print(len(filenames))
+print(len(video_names))
 
 txt = open(save_path + 'path_train.txt', 'a')
+batch_size = 50
+cnt = 0
+while cnt < 55946:
+    if cnt == 55900:
+        batch_size = 46 
+    
+    print(cnt)
+    print(cnt + batch_size)
+    wave_files_batch = wave_files[cnt:cnt+batch_size]
+    filenames_batch = filenames[cnt:cnt+batch_size]
+    video_names_batch = video_names[cnt:cnt+batch_size]
 
-feat = ae.feat_extract(wave_files, shift=100)
-print 'done extract feat!'
-print 'feat len: ' + str(len(feat))
-for i in range(len(feat)):
-    #print feat[i]
-    np.save(filenames[i], feat[i])
-    category = filenames[i].split('/')[5]
-    txt_write = category + ',' + filenames[i] + ',' + video_names[i]
-    print txt_write
-    txt.write(txt_write)
-print 'done'
+    print('len: ' + str(len(wave_files_batch)))
+    print('load path: done')
 
+    #exit(0)
+
+    feat = ae.feat_extract(wave_files_batch, shift=100)
+    print 'done extract feat!'
+    print 'feat len: ' + str(len(feat))
+    for i in range(len(feat)):
+        #print feat[i]
+        np.save(filenames_batch[i], feat[i])
+        category = filenames_batch[i].split('/')[5]
+        txt_write = category + ',' + filenames_batch[i] + ',' + video_names_batch[i]
+        print txt_write
+        txt.write(txt_write)
+    print 'done'
+    
+    cnt += batch_size
 
 
